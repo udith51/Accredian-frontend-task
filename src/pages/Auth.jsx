@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Login from '../components/Login'
 import { Box } from '@mui/material'
 import SignUp from '../components/SignUp'
 
-export default function Auth() {
-    const [authState, setAuthState] = useState("signup");
+export default function Auth({ authState, setAuthState }) {
     return (
         <Box
             display='flex'

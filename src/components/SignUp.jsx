@@ -4,12 +4,16 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button, InputAdornment, TextField, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp({ setAuthState }) {
+    const navigate = useNavigate();
     const [form, setForm] = useState({ username: "", email: "", password: "", confirmPassword: "" });
     const [error, setError] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(false);
     const isAlphanumeric = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+
     const handleChange = (e) => {
         setForm((prev) => {
             return ({ ...form, [e.target.name]: e.target.value })
@@ -31,7 +35,10 @@ export default function SignUp({ setAuthState }) {
             setError("Password should match.");
         } else if (!isAlphanumeric.test(form.password)) {
             setError('Password must be alphanumeric.');
-        } else {
+        } else if (!emailRegex.test(form.email)) {
+            setError('Please enter a valid email address.');
+        }
+        else {
             try {
                 console.log(form);
                 const response = await fetch("http://localhost:8000/auth/register", {
@@ -47,6 +54,7 @@ export default function SignUp({ setAuthState }) {
                     console.log(val);
                     localStorage.setItem('user', JSON.stringify(val.user));
                     setError("");
+                    navigate("/home");
                 } else {
                     const val = await response.json();
                     console.log(val.error);
@@ -63,7 +71,7 @@ export default function SignUp({ setAuthState }) {
             maxWidth='xs'
             component={Paper}
             elevation={3}
-            style={{ padding: "25px", borderRadius: "20px" }}>
+            style={{ padding: "25px", borderRadius: "20px", margin: "15px" }}>
             <div className="form">
                 <Typography variant='h5' align='center'>Signup</Typography>
                 <Grid container spacing={2} justifyContent="center" alignItems="center">

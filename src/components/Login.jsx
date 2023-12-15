@@ -3,8 +3,10 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 export default function Login({ setAuthState }) {
+    const navigate = useNavigate();
     const [form, setForm] = useState({ name: "", password: "" });
     const [error, setError] = useState('');
     const handleChange = (e) => {
@@ -34,6 +36,7 @@ export default function Login({ setAuthState }) {
                     console.log(val);
                     setError("");
                     localStorage.setItem('user', JSON.stringify(val.user));
+                    navigate("/home");
                 } else {
                     const val = await response.json();
                     setError(val.error)
@@ -48,8 +51,10 @@ export default function Login({ setAuthState }) {
             maxWidth='xs'
             component={Paper}
             elevation={3}
-            style={{ padding: "25px", borderRadius: "20px" }}>
-            <div className="form">
+            style={{
+                padding: "25px", borderRadius: "20px", margin: "15px"
+            }}>
+            < div className="form" >
                 <Typography variant='h5' align='center'>Login</Typography>
                 <Grid container spacing={2} justifyContent="center" alignItems="center">
                     <Grid item xs={12}>
@@ -105,6 +110,6 @@ export default function Login({ setAuthState }) {
                     </Grid>
                 </Grid>
             </div>
-        </Container>
+        </ Container>
     )
 }
