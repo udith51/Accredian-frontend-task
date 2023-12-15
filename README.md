@@ -29,6 +29,7 @@
 ![Screenshot 2023-12-15 204439](https://github.com/udith51/Accredian-frontend-task/assets/72927422/57e10b42-51b5-4dc7-8b4d-e81cddd90732)
 ![Screenshot 2023-12-15 204512](https://github.com/udith51/Accredian-frontend-task/assets/72927422/8ac1d3ce-5283-402c-9b68-e493b0d467ed)
 ![Screenshot 2023-12-15 204537](https://github.com/udith51/Accredian-frontend-task/assets/72927422/9a6afabd-26f7-4033-b863-5055f6265e36)
-
+<br/>
+P.S.: If the `Home` screen doesn't load, try opening the website in a new tab. Although the backend addresses CORS errors, occasional issues may arise.
 
 
