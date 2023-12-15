@@ -9,6 +9,7 @@ export default function Login({ setAuthState }) {
     const navigate = useNavigate();
     const [form, setForm] = useState({ name: "", password: "" });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const handleChange = (e) => {
         setForm((prev) => {
             return ({ ...form, [e.target.name]: e.target.value })
@@ -21,9 +22,10 @@ export default function Login({ setAuthState }) {
         else if (form.password.length < 8)
             setError('Password must be at least 8 characters long.');
         else {
-            setError("");
             try {
-                const response = await fetch("http://localhost:8000/auth/login", {
+                setError("");
+                setLoading(true);
+                const response = await fetch("https://accredian-backend-task-v75r.onrender.com/auth/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -39,6 +41,7 @@ export default function Login({ setAuthState }) {
                     navigate("/home");
                 } else {
                     const val = await response.json();
+                    setLoading(false)
                     setError(val.error)
                 }
             } catch (error) {
@@ -88,6 +91,14 @@ export default function Login({ setAuthState }) {
                             {error}
                         </Typography>
                     </Grid>}
+                    {loading && <Grid item xs={12} style={{ display: "flex", alignItem: "center", justifyContent: "center" }}>
+                        <Typography
+                            color="secondary"
+                            style={{ margin: "8px 0" }}>
+                            Please wait.
+                        </Typography>
+                    </Grid>}
+
                     <Button
                         type='submit'
                         fullWidth
@@ -104,6 +115,7 @@ export default function Login({ setAuthState }) {
                             color="primary"
                             style={{ cursor: "pointer", marginTop: "5px", textAlign: "center" }}
                             onClick={() => { setAuthState("signup") }}
+                            disabled={loading}
                         >
                             New user? Signup here.
                         </Typography>

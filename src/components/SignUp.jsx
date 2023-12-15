@@ -11,6 +11,7 @@ export default function SignUp({ setAuthState }) {
     const [form, setForm] = useState({ username: "", email: "", password: "", confirmPassword: "" });
     const [error, setError] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(false);
+    const [loading, setLoading] = useState(false);
     const isAlphanumeric = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const emailRegex = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
 
@@ -26,7 +27,6 @@ export default function SignUp({ setAuthState }) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!form.email.trim() || !form.password.trim() || !form.username.trim() || !form.confirmPassword.trim()) {
             setError('All fields are required.');
         } else if (form.password.length < 8) {
@@ -40,8 +40,9 @@ export default function SignUp({ setAuthState }) {
         }
         else {
             try {
-                console.log(form);
-                const response = await fetch("http://localhost:8000/auth/register", {
+                setError("");
+                setLoading(true);
+                const response = await fetch("https://accredian-backend-task-v75r.onrender.com/auth/register", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -57,7 +58,7 @@ export default function SignUp({ setAuthState }) {
                     navigate("/home");
                 } else {
                     const val = await response.json();
-                    console.log(val.error);
+                    setLoading(false)
                     setError(val.error);
                 }
             } catch (error) {
@@ -134,6 +135,13 @@ export default function SignUp({ setAuthState }) {
                             {error}
                         </Typography>
                     </Grid>}
+                    {loading && <Grid item xs={12} style={{ display: "flex", alignItem: "center", justifyContent: "center" }}>
+                        <Typography
+                            color="secondary"
+                            style={{ margin: "8px 0" }}>
+                            Please wait.
+                        </Typography>
+                    </Grid>}
 
                     <Button
                         type='submit'
@@ -142,6 +150,7 @@ export default function SignUp({ setAuthState }) {
                         color='secondary'
                         style={{ width: "40%", marginTop: "35px" }}
                         onClick={handleSubmit}
+                        disabled={loading}
                     >
                         Sign up
                     </Button>
