@@ -4,7 +4,23 @@ import Auth from './pages/Auth';
 function App() {
   return (
     <div className="App">
-      <Auth />
+      <div className="area" >
+        <ul className="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div >
+      <div className='context'>
+        <Auth />
+      </div>
     </div>
   );
 }
