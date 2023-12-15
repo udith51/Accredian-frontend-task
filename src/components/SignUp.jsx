@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import { Button, InputAdornment, TextField, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
-export default function SignUp() {
+export default function SignUp({ setAuthState }) {
     const [form, setForm] = useState({ username: "", email: "", password: "", confirmPassword: "" });
     const [error, setError] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(false);
@@ -20,23 +20,44 @@ export default function SignUp() {
             else
                 setPasswordMatch(false);
     }
-    const handleSubmit = (e) => {
-        console.log(form);
-
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.email.trim() || !form.password.trim() || !form.username.trim() || !form.confirmPassword.trim())
+
+        if (!form.email.trim() || !form.password.trim() || !form.username.trim() || !form.confirmPassword.trim()) {
             setError('All fields are required.');
-        else if (form.password.length < 8)
+        } else if (form.password.length < 8) {
             setError('Password must be at least 8 characters long.');
-        else if (form.password !== form.confirmPassword)
+        } else if (form.password !== form.confirmPassword) {
             setError("Password should match.");
-        else if (!isAlphanumeric.test(form.password))
+        } else if (!isAlphanumeric.test(form.password)) {
             setError('Password must be alphanumeric.');
-        else {
-            setError("");
-            console.log(form);
+        } else {
+            try {
+                console.log(form);
+                const response = await fetch("http://localhost:8000/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form),
+                });
+
+                if (response.ok) {
+                    const val = await response.json();
+                    console.log(val);
+                    localStorage.setItem('user', JSON.stringify(val.user));
+                    setError("");
+                } else {
+                    const val = await response.json();
+                    console.log(val.error);
+                    setError(val.error);
+                }
+            } catch (error) {
+                console.error("Error during form submission:", error);
+            }
         }
-    }
+    };
+
     return (
         <Container
             maxWidth='xs'
@@ -116,6 +137,16 @@ export default function SignUp() {
                     >
                         Sign up
                     </Button>
+                    <Grid item xs={12}>
+                        <Typography
+                            variant='body2'
+                            color="primary"
+                            style={{ cursor: "pointer", marginTop: "5px", textAlign: "center" }}
+                            onClick={() => { setAuthState("login") }}
+                        >
+                            Already have an account? Login here.
+                        </Typography>
+                    </Grid>
                 </Grid>
             </div>
         </Container>

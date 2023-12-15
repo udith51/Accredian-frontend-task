@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from '@mui/material';
 
-export default function Login() {
+export default function Login({ setAuthState }) {
     const [form, setForm] = useState({ name: "", password: "" });
     const [error, setError] = useState('');
     const handleChange = (e) => {
@@ -12,15 +12,35 @@ export default function Login() {
             return ({ ...form, [e.target.name]: e.target.value })
         })
     }
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.name.trim() || !form.password.trim())
             setError('Email/Username and password cannot be empty.');
-        else if (!form.password.length < 8)
+        else if (form.password.length < 8)
             setError('Password must be at least 8 characters long.');
         else {
             setError("");
-            console.log(form);
+            try {
+                const response = await fetch("http://localhost:8000/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form),
+                });
+
+                if (response.ok) {
+                    const val = await response.json();
+                    console.log(val);
+                    setError("");
+                    localStorage.setItem('user', JSON.stringify(val.user));
+                } else {
+                    const val = await response.json();
+                    setError(val.error)
+                }
+            } catch (error) {
+                console.error("Error during form submission:", error);
+            }
         }
     }
     return (
@@ -36,7 +56,7 @@ export default function Login() {
                         <TextField
                             fullWidth
                             label="Email or Username"
-                            name="email"
+                            name="name"
                             value={form.name}
                             variant="standard"
                             type="text"
@@ -73,6 +93,16 @@ export default function Login() {
                     >
                         Login
                     </Button>
+                    <Grid item xs={12}>
+                        <Typography
+                            variant='body2'
+                            color="primary"
+                            style={{ cursor: "pointer", marginTop: "5px", textAlign: "center" }}
+                            onClick={() => { setAuthState("signup") }}
+                        >
+                            New user? Signup here.
+                        </Typography>
+                    </Grid>
                 </Grid>
             </div>
         </Container>
